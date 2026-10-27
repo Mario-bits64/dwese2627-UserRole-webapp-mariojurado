@@ -14,10 +14,10 @@
 <main class="list-page">
     <div class="list-card">
 
-        <h1>Lista de Comunidades Autónomas</h1>
+        <h1 th:text="#{msg.region-list.title}">Lista de Comunidades Autónomas</h1>
 
         <!-- Botón para añadir -->
-        <a th:href="@{/regions/new}" class="btn btn-success">Añadir Comunidad Autónoma</a>
+        <a th:href="@{/regions/new}" class="btn btn-success" th:text="#{msg.region-list.add}">Añadir Comunidad Autónoma</a>
 
         <!-- Muestra un mensaje de error si hay algún problema -->
         <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
@@ -26,10 +26,10 @@
         <table class="table table-bordered table-striped mt-3">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
+                <th th:text="#{msg.region-list.id}">ID</th>
+                <th th:text="#{msg.region-list.code}">Código</th>
+                <th th:text="#{msg.region-list.name}">Nombre</th>
+                <th th:text="#{msg.region-list.actions}">Acciones</th>
             </tr>
             </thead>
             <tbody>
@@ -38,21 +38,18 @@
                 <td th:text="${region.code}"></td>
                 <td th:text="${region.name}"></td>
                 <td>
-                    <a th:href="@{/regions/edit(id=${region.id})}" class="btn btn-primary btn-sm">Editar</a>
+                    <a th:href="@{/regions/edit(id=${region.id})}" class="btn btn-primary btn-sm" th:text="#{msg.region-list.edit}">Editar</a>
 
                     <form th:action="@{/regions/delete}" method="post" class="d-inline">
                         <input type="hidden" name="id" th:value="${region.id}" />
-                        <button type="submit" class="btn btn-danger btn-sm"
-                                th:onclick="|return confirm('¿Seguro que quieres eliminar esta región?');|">
-                            Eliminar
-                        </button>
+                        <button type="submit" class="btn btn-danger btn-sm" th:onclick="|return confirm('#{msg.region-list.confirm}');|" th:text="#{msg.region-list.delete}">Eliminar</button>
                     </form>
                 </td>
             </tr>
             </tbody>
         </table>
 
-        <a th:href="@{/}" class="btn btn-secondary">Volver al inicio</a>
+        <a th:href="@{/}" class="btn btn-secondary" th:text="#{msg.region-form.returnback}">Volver al inicio</a>
 
     </div>
 </main>
