@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{msg.roles.formTitle})}"></head>
+<body class="d-flex flex-column h-100">
+<header th:replace="fragments/header :: header"></header>
+
+<main class="form-page">
+    <div class="form-card">
+        <h1 th:text="${role.id} == null ? #{msg.roles.addTitle} : #{msg.roles.editTitle}">Rol</h1>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="${role.id == null} ? @{/roles/insert} : @{/roles/update}"
+              th:object="${role}" method="post" class="mt-3">
+            <input type="hidden" th:field="*{id}">
+            <div class="mb-3">
+                <label for="name" class="form-label" th:text="#{msg.roles.name}">Nombre del rol</label>
+                <input type="text" th:field="*{name}" id="name" class="form-control">
+                <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></div>
+            </div>
+            <button type="submit" class="btn btn-primary"
+                    th:text="${role.id} == null ? #{msg.action.create} : #{msg.action.save}">Guardar</button>
+            <a th:href="@{/roles}" class="btn btn-secondary" th:text="#{msg.action.backToList}">Volver a la lista</a>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scripts"></div>
+</body>
+</html>

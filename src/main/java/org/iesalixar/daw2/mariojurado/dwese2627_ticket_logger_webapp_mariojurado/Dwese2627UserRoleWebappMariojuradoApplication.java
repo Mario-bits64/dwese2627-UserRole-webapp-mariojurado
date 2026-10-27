@@ -4,10 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Dwese2627TicketLoggerWebappMariojuradoApplication {
+public class Dwese2627UserRoleWebappMariojuradoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Dwese2627TicketLoggerWebappMariojuradoApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(Dwese2627UserRoleWebappMariojuradoApplication.class, args);
+    }
 }

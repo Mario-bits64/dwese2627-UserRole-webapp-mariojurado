@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{msg.roles.title})}"></head>
+<body class="d-flex flex-column h-100">
+<header th:replace="fragments/header :: header"></header>
+
+<main class="list-page">
+    <div class="list-card">
+        <h1 th:text="#{msg.roles.title}">Roles</h1>
+        <a th:href="@{/roles/new}" class="btn btn-success" th:text="#{msg.roles.add}">Añadir rol</a>
+
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead>
+                <tr>
+                    <th th:text="#{msg.roles.id}">ID</th>
+                    <th th:text="#{msg.roles.name}">Nombre</th>
+                    <th th:text="#{msg.roles.actions}">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="role : ${roles}">
+                    <td th:text="${role.id}">1</td>
+                    <td th:text="${role.name}">ADMIN</td>
+                    <td class="text-nowrap">
+                        <a th:href="@{/roles/edit(id=${role.id})}" class="btn btn-primary btn-sm" th:text="#{msg.action.edit}">Editar</a>
+                        <form th:action="@{/roles/delete}" method="post" class="d-inline">
+                            <input type="hidden" name="id" th:value="${role.id}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    th:onclick="|return confirm('#{msg.roles.confirmDelete}');|"
+                                    th:text="#{msg.action.delete}">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(roles)}">
+                    <td colspan="3" class="text-muted py-4" th:text="#{msg.roles.empty}">Aún no hay roles.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <a th:href="@{/}" class="btn btn-secondary" th:text="#{msg.action.backHome}">Volver al inicio</a>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scripts"></div>
+</body>
+</html>

@@ -34,6 +34,22 @@ body {
     flex-direction: column;
 }
 
+main.home-page {
+    min-height: calc(100vh - 140px);
+    justify-content: center;
+    background-color: #f1f3f5;
+}
+
+.home-card {
+    width: 100%;
+    max-width: 850px;
+    padding: 3rem 2rem;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
 
 /* Centra verticalmente el contenido si la página es corta */
 main {
@@ -286,6 +302,15 @@ main.list-page {
     border: 1px solid #dee2e6;
     width: 100%;
     max-width: 900px;
+}
+
+.user-list-card {
+    max-width: 1500px;
+}
+
+.user-list-card .table {
+    min-width: 1250px;
+    font-size: 0.9rem;
 }
 
 

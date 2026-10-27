@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head ('Ticket Logger - Home')"></head>
+<head th:replace="~{fragments/head :: head('UserRole')}"></head>
 
 <body class="d-flex flex-column h-100">
 
@@ -8,12 +8,16 @@
 <header th:replace="fragments/header :: header"></header>
 
 <!-- Contenido dinámico -->
-<main class="position-relative bg-light" style="height: 100vh;">
-    <div class="position-absolute top-50 start-50 translate-middle text-center">
-        <h1 class="display-4 fw-bold">Ticket Logger</h1>
+<main class="home-page">
+    <div class="home-card">
+        <h1 class="display-5 fw-bold">Gestión de usuarios y roles</h1>
         <p class="lead text-muted">
-            <strong>MARIO JURADO</strong> - Aplicación web para el registro de tickets en compras de supermercado.
+            Administra usuarios y asigna uno o varios roles a cada cuenta.
         </p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
+            <a class="btn btn-dark btn-lg" th:href="@{/users}">Gestionar usuarios</a>
+            <a class="btn btn-outline-dark btn-lg" th:href="@{/roles}">Gestionar roles</a>
+        </div>
     </div>
 </main>
 

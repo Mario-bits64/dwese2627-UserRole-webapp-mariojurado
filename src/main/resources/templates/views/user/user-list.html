@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{msg.users.title})}"></head>
+<body class="d-flex flex-column h-100">
+<header th:replace="fragments/header :: header"></header>
+
+<main class="list-page">
+    <div class="list-card user-list-card">
+        <h1 th:text="#{msg.users.title}">Usuarios</h1>
+        <a th:href="@{/users/new}" class="btn btn-success" th:text="#{msg.users.add}">Añadir usuario</a>
+
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead>
+                <tr>
+                    <th th:text="#{msg.users.username}">Usuario</th>
+                    <th th:text="#{msg.users.roles}">Roles</th>
+                    <th th:text="#{msg.users.status}">Estado</th>
+                    <th th:text="#{msg.users.account}">Cuenta</th>
+                    <th th:text="#{msg.users.emailVerified}">Correo verificado</th>
+                    <th th:text="#{msg.users.mustChangePassword}">Debe cambiar la contraseña</th>
+                    <th th:text="#{msg.users.failedLoginAttempts}">Intentos fallidos</th>
+                    <th th:text="#{msg.users.lastPasswordChange}">Último cambio de contraseña</th>
+                    <th th:text="#{msg.users.passwordExpiresAt}">Caducidad de contraseña</th>
+                    <th th:text="#{msg.users.actions}">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.username}">mario</td>
+                    <td>
+                        <span th:if="${#lists.isEmpty(user.roles)}" class="text-muted" th:text="#{msg.users.noRoles}">Sin roles</span>
+                        <span th:each="role, state : ${user.roles}">
+                            <span class="badge text-bg-secondary" th:text="${role.name}">USER</span><span th:if="${!state.last}"> </span>
+                        </span>
+                    </td>
+                    <td>
+                        <span th:if="${user.active}" class="badge text-bg-success" th:text="#{msg.users.active}">Activo</span>
+                        <span th:unless="${user.active}" class="badge text-bg-secondary" th:text="#{msg.users.inactive}">Inactivo</span>
+                    </td>
+                    <td>
+                        <span th:if="${user.accountNonLocked}" class="badge text-bg-success" th:text="#{msg.users.unlocked}">Desbloqueada</span>
+                        <span th:unless="${user.accountNonLocked}" class="badge text-bg-danger" th:text="#{msg.users.locked}">Bloqueada</span>
+                    </td>
+                    <td>
+                        <span th:if="${user.emailVerified}" class="badge text-bg-success" th:text="#{msg.users.verified}">Verificado</span>
+                        <span th:unless="${user.emailVerified}" class="badge text-bg-warning" th:text="#{msg.users.unverified}">Sin verificar</span>
+                    </td>
+                    <td>
+                        <span th:if="${user.mustChangePassword}" class="badge text-bg-warning" th:text="#{msg.common.yes}">Sí</span>
+                        <span th:unless="${user.mustChangePassword}" class="badge text-bg-secondary" th:text="#{msg.common.no}">No</span>
+                    </td>
+                    <td th:text="${user.failedLoginAttempts}">0</td>
+                    <td class="text-nowrap" th:text="${user.lastPasswordChangeDisplay}">—</td>
+                    <td class="text-nowrap" th:text="${user.passwordExpiresAtDisplay}">—</td>
+                    <td class="text-nowrap">
+                        <a th:href="@{/users/edit(id=${user.id})}" class="btn btn-primary btn-sm" th:text="#{msg.action.edit}">Editar</a>
+                        <form th:action="@{/users/delete}" method="post" class="d-inline">
+                            <input type="hidden" name="id" th:value="${user.id}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    th:onclick="|return confirm('#{msg.users.confirmDelete}');|"
+                                    th:text="#{msg.action.delete}">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="10" class="text-muted py-4" th:text="#{msg.users.empty}">Aún no hay usuarios.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <a th:href="@{/}" class="btn btn-secondary" th:text="#{msg.action.backHome}">Volver al inicio</a>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scripts"></div>
+</body>
+</html>
