@@ -5,7 +5,6 @@ import org.iesalixar.daw2.mariojurado.dwese2627_ticket_logger_webapp_mariojurado
 import org.iesalixar.daw2.mariojurado.dwese2627_ticket_logger_webapp_mariojurado.daos.UserDAO;
 import org.iesalixar.daw2.mariojurado.dwese2627_ticket_logger_webapp_mariojurado.entities.Role;
 import org.iesalixar.daw2.mariojurado.dwese2627_ticket_logger_webapp_mariojurado.entities.User;
-import org.iesalixar.daw2.mariojurado.dwese2627_ticket_logger_webapp_mariojurado.services.PasswordHasher;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,14 +25,11 @@ public class UserController {
 
     private final UserDAO userDAO;
     private final RoleDAO roleDAO;
-    private final PasswordHasher passwordHasher;
     private final MessageSource messageSource;
 
-    public UserController(UserDAO userDAO, RoleDAO roleDAO, PasswordHasher passwordHasher,
-                          MessageSource messageSource) {
+    public UserController(UserDAO userDAO, RoleDAO roleDAO, MessageSource messageSource) {
         this.userDAO = userDAO;
         this.roleDAO = roleDAO;
-        this.passwordHasher = passwordHasher;
         this.messageSource = messageSource;
     }
 
@@ -96,7 +92,7 @@ public class UserController {
         }
 
         user.setUsername(user.getUsername().trim());
-        user.setPasswordHash(passwordHasher.hash(password));
+        user.setPassword(password);
         LocalDateTime passwordChangedAt = user.getLastPasswordChange();
         user.setPasswordExpiresAt(passwordChangedAt.plusMonths(3));
         if (user.getFailedLoginAttempts() == null) {
@@ -145,7 +141,7 @@ public class UserController {
 
         user.setUsername(username);
         boolean passwordChanged = password != null && !password.isBlank();
-        user.setPasswordHash(passwordChanged ? passwordHasher.hash(password) : current.getPasswordHash());
+        user.setPassword(passwordChanged ? password : current.getPassword());
         LocalDateTime passwordChangedAt = passwordChanged ? LocalDateTime.now() : current.getLastPasswordChange();
         user.setLastPasswordChange(passwordChangedAt);
         user.setPasswordExpiresAt(passwordChanged

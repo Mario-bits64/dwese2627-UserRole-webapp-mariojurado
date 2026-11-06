@@ -28,7 +28,7 @@ public class User {
     @Size(min = 3, max = 40, message = "{msg.user.username.size}")
     private String username;
 
-    private String passwordHash;
+    private String password;
     private Boolean active = true;
     private Boolean accountNonLocked = true;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")

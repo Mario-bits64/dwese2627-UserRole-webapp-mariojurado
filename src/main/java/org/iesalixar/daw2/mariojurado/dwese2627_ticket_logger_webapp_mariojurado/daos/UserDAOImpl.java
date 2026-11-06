@@ -18,7 +18,7 @@ public class UserDAOImpl implements UserDAO {
         User user = new User();
         user.setId(rs.getLong("id"));
         user.setUsername(rs.getString("username"));
-        user.setPasswordHash(rs.getString("password_hash"));
+        user.setPassword(rs.getString("password_hash"));
         user.setActive(rs.getBoolean("active"));
         user.setAccountNonLocked(rs.getBoolean("account_non_locked"));
         Timestamp lastPasswordChange = rs.getTimestamp("last_password_change");
@@ -87,7 +87,7 @@ public class UserDAOImpl implements UserDAO {
         String sql = "INSERT INTO users (username, password_hash, active, account_non_locked, last_password_change, "
                 + "password_expires_at, failed_login_attempts, email_verified, must_change_password, role_id) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, user.getUsername(), user.getPasswordHash(),
+        jdbcTemplate.update(sql, user.getUsername(), user.getPassword(),
                 Boolean.TRUE.equals(user.getActive()), Boolean.TRUE.equals(user.getAccountNonLocked()),
                 user.getLastPasswordChange(), user.getPasswordExpiresAt(), user.getFailedLoginAttempts(),
                 Boolean.TRUE.equals(user.getEmailVerified()), Boolean.TRUE.equals(user.getMustChangePassword()),
@@ -99,7 +99,7 @@ public class UserDAOImpl implements UserDAO {
         String sql = "UPDATE users SET username = ?, password_hash = ?, active = ?, account_non_locked = ?, "
                 + "last_password_change = ?, password_expires_at = ?, failed_login_attempts = ?, "
                 + "email_verified = ?, must_change_password = ?, role_id = ? WHERE id = ?";
-        jdbcTemplate.update(sql, user.getUsername(), user.getPasswordHash(),
+        jdbcTemplate.update(sql, user.getUsername(), user.getPassword(),
                 Boolean.TRUE.equals(user.getActive()), Boolean.TRUE.equals(user.getAccountNonLocked()),
                 user.getLastPasswordChange(), user.getPasswordExpiresAt(), user.getFailedLoginAttempts(),
                 Boolean.TRUE.equals(user.getEmailVerified()), Boolean.TRUE.equals(user.getMustChangePassword()),
