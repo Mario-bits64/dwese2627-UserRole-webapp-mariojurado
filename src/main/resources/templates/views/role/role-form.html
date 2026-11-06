@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" translate="no">
 <head th:replace="~{fragments/head :: head(#{msg.roles.formTitle})}"></head>
 <body class="d-flex flex-column h-100">
 <header th:replace="fragments/header :: header"></header>
@@ -13,13 +13,13 @@
               th:object="${role}" method="post" class="mt-3">
             <input type="hidden" th:field="*{id}">
             <div class="mb-3">
-                <label for="name" class="form-label" th:text="#{msg.roles.name}">Nombre del rol</label>
+                <label for="name" class="form-label" th:text="#{msg.roles.name}"></label>
                 <input type="text" th:field="*{name}" id="name" class="form-control">
                 <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></div>
             </div>
             <button type="submit" class="btn btn-primary"
-                    th:text="${role.id} == null ? #{msg.action.create} : #{msg.action.save}">Guardar</button>
-            <a th:href="@{/roles}" class="btn btn-secondary" th:text="#{msg.action.backToList}">Volver a la lista</a>
+                    th:text="${role.id} == null ? #{msg.action.create} : #{msg.action.save}"></button>
+            <a th:href="@{/roles}" class="btn btn-secondary" th:text="#{msg.action.backToList}"></a>
         </form>
     </div>
 </main>

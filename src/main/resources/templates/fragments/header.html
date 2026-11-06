@@ -5,14 +5,15 @@
 
             <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
-                <img th:src="@{/images/logo.png}" alt="UserRole" width="40" height="32" class="me-2">
-                <span class="fw-semibold text-primary">UserRole</span>
+                <img th:src="@{/images/logo.png}" th:alt="#{msg.app.title}" width="40" height="32" class="me-2">
+                <span class="fw-semibold text-primary" th:text="#{msg.app.title}">UserRole</span>
             </a>
 
 
             <!-- Botón hamburguesa -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-                    aria-controls="navbarMenu" aria-expanded="false" aria-label="Abrir o cerrar el menú de navegación">
+                    aria-controls="navbarMenu" aria-expanded="false"
+                    th:attr="aria-label=#{msg.nav.toggle}">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -24,13 +25,13 @@
                 <!-- Menú principal -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}">Inicio</a>
+                        <a class="nav-link" th:href="@{/}" th:text="#{msg.nav.home}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/users}">Usuarios</a>
+                        <a class="nav-link" th:href="@{/users}" th:text="#{msg.nav.users}">Usuarios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/roles}">Roles</a>
+                        <a class="nav-link" th:href="@{/roles}" th:text="#{msg.nav.roles}">Roles</a>
                     </li>
                 </ul>
 
@@ -38,18 +39,18 @@
                 <!-- Avatar y menú usuario -->
                 <div class="dropdown text-end">
                     <a th:href="@{/users}" class="d-block link-body-emphasis text-decoration-none"
-                       aria-label="Usuarios">
-                        <img th:src="@{/images/avatar.png}" alt="Usuarios" width="40" height="40" class="rounded-circle border border-2 border-primary-subtle">
+                       th:attr="aria-label=#{msg.nav.users}">
+                        <img th:src="@{/images/avatar.png}" th:alt="#{msg.nav.users}" width="40" height="40" class="rounded-circle border border-2 border-primary-subtle">
                     </a>
                 </div>
 
                 <!-- Selector de idioma -->
-                <form method="get" class="d-lg-flex align-items-center me-3">
-                    <label for="langSelect" class="visually-hidden">Idioma</label>
+                <form method="get" th:action="@{/}" class="d-lg-flex align-items-center me-3">
+                    <label for="langSelect" class="visually-hidden" th:text="#{msg.nav.language}">Idioma</label>
                     <select id="langSelect" name="lang" class="form-select form-select-sm"
                             onchange="this.form.submit()">
-                        <option value="es" th:selected="${#locale.language == 'es'}">Español</option>
-                        <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+                        <option value="es" th:selected="${#locale.language == 'es'}" th:text="#{msg.language.spanish}">Español</option>
+                        <option value="en" th:selected="${#locale.language == 'en'}" th:text="#{msg.language.english}">Inglés</option>
                     </select>
                 </form>
             </div>

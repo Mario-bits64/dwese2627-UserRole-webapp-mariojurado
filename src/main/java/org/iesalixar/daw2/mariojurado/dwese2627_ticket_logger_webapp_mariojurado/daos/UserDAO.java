@@ -14,9 +14,9 @@ public interface UserDAO {
 
     boolean existsByUsernameAndNotId(String username, Long id);
 
-    void insert(User user, List<Long> roleIds);
+    void insert(User user);
 
-    void update(User user, List<Long> roleIds);
+    void update(User user);
 
     void delete(Long id);
 }

@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users")
@@ -49,7 +46,7 @@ public class UserController {
     @GetMapping("/new")
     public String newForm(Model model) {
         model.addAttribute("user", new User());
-        prepareForm(model, List.of());
+        model.addAttribute("availableRoles", roleDAO.findAll());
         return "views/user/user-form";
     }
 
@@ -63,30 +60,38 @@ public class UserController {
             return "redirect:/users";
         }
         model.addAttribute("user", user);
-        prepareForm(model, user.getRoles().stream().map(Role::getId).toList());
+        model.addAttribute("availableRoles", roleDAO.findAll());
         return "views/user/user-form";
     }
 
     @PostMapping("/insert")
     public String insert(@Valid @ModelAttribute("user") User user, BindingResult result,
                          @RequestParam(name = "password", required = false) String password,
-                         @RequestParam(name = "roleIds", required = false) List<Long> roleIds,
                          Model model, RedirectAttributes redirectAttributes, Locale locale) {
-        List<Long> selectedRoleIds = distinctIds(roleIds);
-        boolean hasPasswordError = password == null || password.isBlank();
-        boolean hasRoleError = !containsOnlyAvailableRoles(selectedRoleIds);
+        if (user.getRole() == null) {
+            user.setRole(new Role());
+        }
         if (userDAO.existsByUsername(user.getUsername() == null ? "" : user.getUsername().trim())) {
             result.rejectValue("username", "msg.user.username.duplicate");
+        }
+        Role selectedRole = user.getRole() == null || user.getRole().getId() == null
+                ? null : roleDAO.findById(user.getRole().getId());
+        if (selectedRole == null) {
+            result.rejectValue("role.id", "msg.user.role.required");
+        } else {
+            user.setRole(selectedRole);
         }
         if (user.getLastPasswordChange() == null && !result.hasFieldErrors("lastPasswordChange")) {
             result.rejectValue("lastPasswordChange", "msg.user.lastPasswordChange.required");
         }
-        if (hasPasswordError || hasRoleError) {
-            setFormErrors(model, hasPasswordError, hasRoleError, locale);
+        boolean hasPasswordError = password == null || password.isBlank();
+        if (hasPasswordError) {
+            model.addAttribute("passwordError",
+                    messageSource.getMessage("msg.user.password.required", null, locale));
         }
-        if (result.hasErrors() || hasPasswordError || hasRoleError) {
+        if (result.hasErrors() || hasPasswordError) {
             user.setUsername(user.getUsername() == null ? null : user.getUsername().trim());
-            prepareForm(model, selectedRoleIds);
+            model.addAttribute("availableRoles", roleDAO.findAll());
             return "views/user/user-form";
         }
 
@@ -101,7 +106,7 @@ public class UserController {
         user.setAccountNonLocked(Boolean.TRUE.equals(user.getAccountNonLocked()));
         user.setEmailVerified(Boolean.TRUE.equals(user.getEmailVerified()));
         user.setMustChangePassword(Boolean.TRUE.equals(user.getMustChangePassword()));
-        userDAO.insert(user, selectedRoleIds);
+        userDAO.insert(user);
         redirectAttributes.addFlashAttribute("successMessage",
                 messageSource.getMessage("msg.user.created", null, locale));
         return "redirect:/users";
@@ -110,8 +115,10 @@ public class UserController {
     @PostMapping("/update")
     public String update(@Valid @ModelAttribute("user") User user, BindingResult result,
                          @RequestParam(name = "password", required = false) String password,
-                         @RequestParam(name = "roleIds", required = false) List<Long> roleIds,
                          Model model, RedirectAttributes redirectAttributes, Locale locale) {
+        if (user.getRole() == null) {
+            user.setRole(new Role());
+        }
         User current = userDAO.findById(user.getId());
         if (current == null) {
             redirectAttributes.addFlashAttribute("errorMessage",
@@ -119,18 +126,20 @@ public class UserController {
             return "redirect:/users";
         }
 
-        List<Long> selectedRoleIds = distinctIds(roleIds);
-        boolean hasRoleError = !containsOnlyAvailableRoles(selectedRoleIds);
         String username = user.getUsername() == null ? "" : user.getUsername().trim();
         if (userDAO.existsByUsernameAndNotId(username, user.getId())) {
             result.rejectValue("username", "msg.user.username.duplicate");
         }
-        if (hasRoleError) {
-            setFormErrors(model, false, true, locale);
+        Role selectedRole = user.getRole() == null || user.getRole().getId() == null
+                ? null : roleDAO.findById(user.getRole().getId());
+        if (selectedRole == null) {
+            result.rejectValue("role.id", "msg.user.role.required");
+        } else {
+            user.setRole(selectedRole);
         }
-        if (result.hasErrors() || hasRoleError) {
+        if (result.hasErrors()) {
             user.setUsername(username);
-            prepareForm(model, selectedRoleIds);
+            model.addAttribute("availableRoles", roleDAO.findAll());
             return "views/user/user-form";
         }
 
@@ -146,7 +155,7 @@ public class UserController {
         user.setAccountNonLocked(Boolean.TRUE.equals(user.getAccountNonLocked()));
         user.setEmailVerified(Boolean.TRUE.equals(user.getEmailVerified()));
         user.setMustChangePassword(Boolean.TRUE.equals(user.getMustChangePassword()));
-        userDAO.update(user, selectedRoleIds);
+        userDAO.update(user);
         redirectAttributes.addFlashAttribute("successMessage",
                 messageSource.getMessage("msg.user.updated", null, locale));
         return "redirect:/users";
@@ -158,28 +167,5 @@ public class UserController {
         redirectAttributes.addFlashAttribute("successMessage",
                 messageSource.getMessage("msg.user.deleted", null, locale));
         return "redirect:/users";
-    }
-
-    private void prepareForm(Model model, List<Long> selectedRoleIds) {
-        model.addAttribute("availableRoles", roleDAO.findAll());
-        model.addAttribute("selectedRoleIds", selectedRoleIds);
-    }
-
-    private void setFormErrors(Model model, boolean passwordError, boolean roleError, Locale locale) {
-        if (passwordError) {
-            model.addAttribute("passwordError", messageSource.getMessage("msg.user.password.required", null, locale));
-        }
-        if (roleError) {
-            model.addAttribute("roleError", messageSource.getMessage("msg.user.roles.required", null, locale));
-        }
-    }
-
-    private boolean containsOnlyAvailableRoles(List<Long> roleIds) {
-        Set<Long> available = roleDAO.findAll().stream().map(Role::getId).collect(Collectors.toSet());
-        return !roleIds.isEmpty() && available.containsAll(roleIds);
-    }
-
-    private List<Long> distinctIds(List<Long> roleIds) {
-        return roleIds == null ? List.of() : roleIds.stream().filter(id -> id != null).distinct().toList();
     }
 }

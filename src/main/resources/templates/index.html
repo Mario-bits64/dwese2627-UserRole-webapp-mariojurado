@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('UserRole')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" translate="no">
+<head th:replace="~{fragments/head :: head(#{msg.app.title})}"></head>
 
 <body class="d-flex flex-column h-100">
 
@@ -10,13 +10,13 @@
 <!-- Contenido dinámico -->
 <main class="home-page">
     <div class="home-card">
-        <h1 class="display-5 fw-bold">Gestión de usuarios y roles</h1>
-        <p class="lead text-muted">
-            Administra usuarios y asigna uno o varios roles a cada cuenta.
+        <h1 class="display-5 fw-bold" th:text="#{msg.home.title}">Gestión de usuarios y roles</h1>
+        <p class="lead text-muted" th:text="#{msg.home.description}">
+            Administra usuarios y asigna un rol a cada cuenta.
         </p>
         <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
-            <a class="btn btn-dark btn-lg" th:href="@{/users}">Gestionar usuarios</a>
-            <a class="btn btn-outline-dark btn-lg" th:href="@{/roles}">Gestionar roles</a>
+            <a class="btn btn-dark btn-lg" th:href="@{/users}" th:text="#{msg.home.users}">Gestionar usuarios</a>
+            <a class="btn btn-outline-dark btn-lg" th:href="@{/roles}" th:text="#{msg.home.roles}">Gestionar roles</a>
         </div>
     </div>
 </main>

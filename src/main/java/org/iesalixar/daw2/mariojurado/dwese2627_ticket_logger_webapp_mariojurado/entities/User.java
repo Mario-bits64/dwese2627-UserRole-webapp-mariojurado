@@ -10,9 +10,6 @@ import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Entidad que representa un usuario de la tabla users.
@@ -24,8 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
-    private static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private Long id;
 
@@ -43,17 +38,5 @@ public class User {
     private Integer failedLoginAttempts = 0;
     private Boolean emailVerified = false;
     private Boolean mustChangePassword = false;
-    private List<Role> roles = new ArrayList<>();
-
-    public String getLastPasswordChangeDisplay() {
-        return formatDate(lastPasswordChange);
-    }
-
-    public String getPasswordExpiresAtDisplay() {
-        return formatDate(passwordExpiresAt);
-    }
-
-    private String formatDate(LocalDateTime value) {
-        return value == null ? "—" : value.format(DISPLAY_DATE_FORMAT);
-    }
+    private Role role = new Role();
 }
